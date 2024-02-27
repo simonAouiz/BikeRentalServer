@@ -1,5 +1,3 @@
-// database.js
-
 const sqlite3 = require("sqlite3");
 const { open } = require("sqlite");
 
@@ -7,7 +5,7 @@ const { open } = require("sqlite");
 const openDatabase = async () => {
   try {
     const db = await open({
-      filename: "./db/database.db", // Specify the relative path
+      filename: "./db/database.db",
       driver: sqlite3.Database,
     });
     console.log("Connected to the database");

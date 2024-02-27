@@ -1,5 +1,3 @@
-// server.js
-
 const express = require("express");
 const bodyParser = require("body-parser");
 const { openDatabase } = require("./src/database/database"); // Import database connection
@@ -16,7 +14,7 @@ const userRoutes = require("./src/routes/userRoutes");
 app.use("/users", userRoutes);
 
 // Start the server
-const port = process.env.PORT || 3000;
+const port = process.env.PORT || 5500;
 
 // Open the database connection
 openDatabase()

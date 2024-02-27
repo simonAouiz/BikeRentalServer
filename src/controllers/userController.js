@@ -1,4 +1,3 @@
-// userController.js
 const userModel = require("../models/userModel");
 
 exports.signup = async (req, res) => {
