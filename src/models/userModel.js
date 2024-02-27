@@ -1,5 +1,11 @@
-// userModel.js
-const db = require("../database/database");
+const { openDatabase } = require("../database/database");
+
+let db;
+
+// Initialize the database connection
+openDatabase().then((connection) => {
+  db = connection;
+});
 
 exports.getUserByUsernameOrEmail = async (username, email) => {
   return new Promise((resolve, reject) => {
