@@ -2,11 +2,14 @@ const userModel = require("../models/userModel");
 
 exports.signup = async (req, res) => {
   try {
+    db = req.app.get("db");
     const { full_name, username, password, email, phoneNumber } = req.body;
+    console.log(req.body);
     // Check if user already exists
     const existingUser = await userModel.getUserByUsernameOrEmail(
       username,
-      email
+      email,
+      db
     );
     if (existingUser) {
       return res
@@ -20,6 +23,7 @@ exports.signup = async (req, res) => {
       password,
       email,
       phoneNumber,
+      db,
     });
     res.json({ message: "User signed up successfully", user: newUser });
   } catch (error) {
@@ -32,7 +36,7 @@ exports.signIn = async (req, res) => {
   try {
     const { username, password } = req.body;
     // Check if user exists and password is correct
-    const user = await userModel.getUserByUsername(username);
+    const user = await userModel.getUserByUsername(username, req.app.get("db"));
     if (!user || user.password !== password) {
       return res.status(401).json({ error: "Invalid username or password" });
     }

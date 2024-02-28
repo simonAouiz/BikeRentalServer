@@ -1,13 +1,4 @@
-const { openDatabase } = require("../database/database");
-
-let db;
-
-// Initialize the database connection
-openDatabase().then((connection) => {
-  db = connection;
-});
-
-exports.getUserByUsernameOrEmail = async (username, email) => {
+exports.getUserByUsernameOrEmail = async (username, email, db) => {
   return new Promise((resolve, reject) => {
     db.get(
       "SELECT * FROM users WHERE username = ? OR email = ?",
@@ -23,7 +14,7 @@ exports.getUserByUsernameOrEmail = async (username, email) => {
   });
 };
 
-exports.getUserByUsername = async (username) => {
+exports.getUserByUsername = async (username, db) => {
   return new Promise((resolve, reject) => {
     db.get("SELECT * FROM users WHERE username = ?", [username], (err, row) => {
       if (err) {
@@ -41,6 +32,7 @@ exports.createUser = async ({
   password,
   email,
   phoneNumber,
+  db,
 }) => {
   return new Promise((resolve, reject) => {
     db.run(

@@ -1,6 +1,8 @@
 const express = require("express");
 const bodyParser = require("body-parser");
-const { openDatabase } = require("./src/database/database"); // Import database connection
+const sqlite3 = require("sqlite3").verbose();
+const path = require("path");
+const { db } = require("./src/database/database"); // Import database connection
 
 const app = express();
 
@@ -16,15 +18,11 @@ app.use("/users", userRoutes);
 // Start the server
 const port = process.env.PORT || 5500;
 
-// Open the database connection
-openDatabase()
-  .then((db) => {
-    app.set("db", db); // Set the database object in Express app
-
-    app.listen(port, () => {
-      console.log(`Server is running on port ${port}`);
-    });
-  })
-  .catch((err) => {
-    console.error("Error opening database:", err.message);
+try {
+  app.set("db", db);
+  app.listen(port, () => {
+    console.log(`Server is running on port ${port}`);
   });
+} catch {
+  console.error("Error opening database");
+}

@@ -1,19 +1,11 @@
 const sqlite3 = require("sqlite3");
-const { open } = require("sqlite");
 
-// Open the database connection
-const openDatabase = async () => {
-  try {
-    const db = await open({
-      filename: "./db/database.db",
-      driver: sqlite3.Database,
-    });
-    console.log("Connected to the database");
-    return db;
-  } catch (error) {
-    console.error("Error opening database:", error.message);
-    throw error;
+const db = new sqlite3.Database("./db/database.db", (err) => {
+  if (err) {
+    console.error(err.message);
+  } else {
+    console.log("Connected to the SQLite database.");
   }
-};
+});
 
-module.exports = { openDatabase };
+module.exports = { db };
