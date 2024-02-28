@@ -1,10 +1,12 @@
 const express = require("express");
+const cors = require("cors");
 const multer = require("multer");
 const { db } = require("./src/database/database"); // Import database connection
 
 const app = express();
 
 // Middleware
+app.use(cors());
 const upload = multer();
 app.use(upload.none());
 
