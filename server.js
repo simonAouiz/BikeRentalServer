@@ -1,13 +1,12 @@
 const express = require("express");
-const bodyParser = require("body-parser");
-const sqlite3 = require("sqlite3").verbose();
-const path = require("path");
+const multer = require("multer");
 const { db } = require("./src/database/database"); // Import database connection
 
 const app = express();
 
 // Middleware
-app.use(bodyParser.json());
+const upload = multer();
+app.use(upload.none());
 
 // Import user routes
 const userRoutes = require("./src/routes/userRoutes");

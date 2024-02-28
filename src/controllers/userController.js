@@ -4,7 +4,6 @@ exports.signup = async (req, res) => {
   try {
     db = req.app.get("db");
     const { full_name, username, password, email, phoneNumber } = req.body;
-    console.log(req.body);
     // Check if user already exists
     const existingUser = await userModel.getUserByUsernameOrEmail(
       username,
