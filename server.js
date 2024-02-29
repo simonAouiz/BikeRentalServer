@@ -1,20 +1,36 @@
 const express = require("express");
 const cors = require("cors");
 const multer = require("multer");
+const path = require("path");
 const { db } = require("./src/database/database"); // Import database connection
 
 const app = express();
 
 // Middleware
 app.use(cors());
-const upload = multer();
-app.use(upload.none());
+
+// Configure multer to store uploaded files in the 'uploads' directory
+const storage = multer.diskStorage({
+  destination: function (req, file, cb) {
+    cb(null, "uploads/");
+  },
+  filename: function (req, file, cb) {
+    cb(null, Date.now() + path.extname(file.originalname)); // Appending extension
+  },
+});
+
+const upload = multer({ storage: storage });
 
 // Import user routes
 const userRoutes = require("./src/routes/userRoutes");
+const bikeRoutes = require("./src/routes/bikeRoutes");
 
 // Use user routes
-app.use("/users", userRoutes);
+app.use("/users", upload.none(), userRoutes);
+app.use("/bikes", upload.single("image"), bikeRoutes); // Apply multer middleware here
+
+// Serve static files from the 'uploads' directory
+app.use("/uploads", express.static("uploads"));
 
 // Start the server
 const port = process.env.PORT || 5500;
