@@ -3,12 +3,20 @@ const bikeModel = require("../models/bikeModel");
 exports.upload = async (req, res) => {
   try {
     const db = req.app.get("db");
-    const { description, city, dateStart, dateEnd, price } = req.body;
+    const { description, city, dateStart, dateEnd, price, username } = req.body;
     const imagePath = req.file.path;
 
     // Save the new bike in the database
     const result = await bikeModel.createBike(
-      { image: imagePath, description, city, dateStart, dateEnd, price },
+      {
+        image: imagePath,
+        description,
+        city,
+        dateStart,
+        dateEnd,
+        price,
+        username,
+      },
       db
     );
 
