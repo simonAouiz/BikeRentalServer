@@ -48,3 +48,19 @@ exports.createUser = async ({
     );
   });
 };
+
+exports.updatePassword = async (username, newPassword, db) => {
+  return new Promise((resolve, reject) => {
+    db.run(
+      "UPDATE users SET password = ? WHERE username = ?",
+      [newPassword, username],
+      function (err) {
+        if (err) {
+          reject(err);
+        } else {
+          resolve();
+        }
+      }
+    );
+  });
+};
