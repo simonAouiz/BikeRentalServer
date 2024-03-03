@@ -5,4 +5,6 @@ const bikeController = require("../controllers/bikeController");
 
 router.post("/upload", bikeController.upload);
 
+router.get("/user/:username", bikeController.getBikesByUsername);
+
 module.exports = router;

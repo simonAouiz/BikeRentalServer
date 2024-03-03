@@ -24,3 +24,19 @@ exports.createBike = async (
     );
   });
 };
+
+exports.getBikesFromDB = async ({ username }, db) => {
+  return new Promise((resolve, reject) => {
+    db.all(
+      "SELECT * FROM bikes WHERE uploader = ?",
+      [username],
+      function (err, rows) {
+        if (err) {
+          reject(err);
+        } else {
+          resolve(rows);
+        }
+      }
+    );
+  });
+};
