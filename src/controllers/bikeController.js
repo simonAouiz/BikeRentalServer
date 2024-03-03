@@ -28,3 +28,17 @@ exports.upload = async (req, res) => {
     res.status(500).json({ error: "Internal server error" });
   }
 };
+
+exports.getBikesByUsername = async (req, res) => {
+  try {
+    const db = req.app.get("db");
+    const { username } = req.params;
+
+    const result = await bikeModel.getBikesFromDB({ username }, db);
+
+    res.status(200).json({ message: "Got bikes successfully", bikes: result });
+  } catch (error) {
+    console.error("Error getting bikes:", error);
+    res.status(500).json({ error: "Internal server error" });
+  }
+};
