@@ -40,3 +40,28 @@ exports.getBikesFromDB = async ({ username }, db) => {
     );
   });
 };
+
+exports.getBikesFilteredFromDB = async ({ city, startDate, endDate }, db) => {
+  return new Promise((resolve, reject) => {
+    // Construct the SQL query based on the provided filter parameters
+    let sql = "SELECT * FROM bikes WHERE 1=1";
+    const params = [];
+
+    if (city) {
+      sql += " AND city = ?";
+      params.push(city);
+    }
+    if (startDate && endDate) {
+      sql += " AND dateStart >= ? AND dateEnd <= ?";
+      params.push(startDate, endDate);
+    }
+
+    db.all(sql, params, function (err, rows) {
+      if (err) {
+        reject(err);
+      } else {
+        resolve(rows);
+      }
+    });
+  });
+};

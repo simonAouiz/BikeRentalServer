@@ -42,3 +42,27 @@ exports.getBikesByUsername = async (req, res) => {
     res.status(500).json({ error: "Internal server error" });
   }
 };
+
+exports.getBikesWithFilter = async (req, res) => {
+  try {
+    const db = req.app.get("db");
+    const { city, startDate, endDate } = req.query; // Extract parameters from req.query
+    console.log(city, startDate, endDate);
+
+    // Build filter object based on provided parameters
+    const filter = {};
+    if (city) filter.city = city;
+    if (startDate && endDate) {
+      filter.dateStart = { $gte: startDate };
+      filter.dateEnd = { $lte: endDate };
+    }
+
+    // Get bikes from the database based on the filter
+    const result = await bikeModel.getBikesFilteredFromDB(filter, db);
+
+    res.status(200).json({ message: "Got bikes successfully", bikes: result });
+  } catch (error) {
+    console.error("Error getting bikes with filter:", error);
+    res.status(500).json({ error: "Internal server error" });
+  }
+};
