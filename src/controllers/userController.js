@@ -50,7 +50,7 @@ exports.changePassword = async (req, res) => {
   try {
     const { username, oldPassword, newPassword } = req.body;
     const db = req.app.get("db");
-    console.log("Form Data Received:", req.body); // Log the form data
+    console.log("Form Data Received:", req.body);
     // Check if user exists and old password is correct
     const user = await userModel.getUserByUsername(username, db);
     if (!user || user.password !== oldPassword) {
