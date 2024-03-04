@@ -66,3 +66,46 @@ exports.getBikesWithFilter = async (req, res) => {
     res.status(500).json({ error: "Internal server error" });
   }
 };
+
+exports.edit = async (req, res) => {
+  try {
+    const db = req.app.get("db");
+    const { description, city, dateStart, dateEnd, price } = req.body;
+    const id = req.params.id;
+
+    let result;
+
+    if (req.file) {
+      const imagePath = req.file.path;
+      result = await bikeModel.editBike(
+        {
+          image: imagePath,
+          description,
+          city,
+          dateStart,
+          dateEnd,
+          price,
+          id,
+        },
+        db
+      );
+    } else {
+      result = await bikeModel.editBikeWithoutImage(
+        {
+          description,
+          city,
+          dateStart,
+          dateEnd,
+          price,
+          id,
+        },
+        db
+      );
+    }
+
+    res.status(200).json({ message: "Bike edited successfully", bike: result });
+  } catch (error) {
+    console.error("Error editing bikes:", error);
+    res.status(500).json({ error: "Internal server error" });
+  }
+};

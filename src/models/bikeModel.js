@@ -65,3 +65,56 @@ exports.getBikesFilteredFromDB = async ({ city, startDate, endDate }, db) => {
     });
   });
 };
+
+exports.editBike = async (
+  { image: imagePath, description, city, dateStart, dateEnd, price, id },
+  db
+) => {
+  return new Promise((resolve, reject) => {
+    db.run(
+      "UPDATE bikes SET image = ?, description = ?, city = ?, dateStart = ?, dateEnd = ?, price = ? WHERE id = ?",
+      [imagePath, description, city, dateStart, dateEnd, price, id],
+      function (err) {
+        if (err) {
+          reject(err);
+        } else {
+          resolve({
+            image: imagePath,
+            description,
+            city,
+            dateStart,
+            dateEnd,
+            price,
+            id,
+          });
+        }
+      }
+    );
+  });
+};
+
+exports.editBikeWithoutImage = async (
+  { description, city, dateStart, dateEnd, price, id },
+  db
+) => {
+  return new Promise((resolve, reject) => {
+    db.run(
+      "UPDATE bikes SET description = ?, city = ?, dateStart = ?, dateEnd = ?, price = ? WHERE id = ?",
+      [description, city, dateStart, dateEnd, price, id],
+      function (err) {
+        if (err) {
+          reject(err);
+        } else {
+          resolve({
+            description,
+            city,
+            dateStart,
+            dateEnd,
+            price,
+            id,
+          });
+        }
+      }
+    );
+  });
+};
