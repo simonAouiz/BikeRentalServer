@@ -25,7 +25,19 @@ exports.createBike = async (
   });
 };
 
-exports.getBikesFromDB = async ({ username }, db) => {
+exports.getBikeByID = async (id, db) => {
+  return new Promise((resolve, reject) => {
+    db.get("SELECT * FROM bikes WHERE id = ?", [id], function (err, rows) {
+      if (err) {
+        reject(err);
+      } else {
+        resolve(rows);
+      }
+    });
+  });
+};
+
+exports.getBikesByUser = async ({ username }, db) => {
   return new Promise((resolve, reject) => {
     db.all(
       "SELECT * FROM bikes WHERE uploader = ?",
@@ -116,5 +128,17 @@ exports.editBikeWithoutImage = async (
         }
       }
     );
+  });
+};
+
+exports.removeBike = async (id, db) => {
+  return new Promise((resolve, reject) => {
+    db.run("DELETE FROM bikes WHERE id = ?", [id], function (err) {
+      if (err) {
+        reject(err);
+      } else {
+        resolve({ message: "Bike removed successfully" });
+      }
+    });
   });
 };

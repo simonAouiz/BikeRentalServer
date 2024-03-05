@@ -1,4 +1,8 @@
 const bikeModel = require("../models/bikeModel");
+// For removing uploaded image after removing bike from db
+const fs = require("fs");
+const util = require("util");
+const unlinkFile = util.promisify(fs.unlink);
 
 exports.upload = async (req, res) => {
   try {
@@ -34,7 +38,7 @@ exports.getBikesByUsername = async (req, res) => {
     const db = req.app.get("db");
     const { username } = req.params;
 
-    const result = await bikeModel.getBikesFromDB({ username }, db);
+    const result = await bikeModel.getBikesByUser({ username }, db);
 
     res.status(200).json({ message: "Got bikes successfully", bikes: result });
   } catch (error) {
@@ -105,7 +109,31 @@ exports.edit = async (req, res) => {
 
     res.status(200).json({ message: "Bike edited successfully", bike: result });
   } catch (error) {
-    console.error("Error editing bikes:", error);
+    console.error("Error editing bike:", error);
+    res.status(500).json({ error: "Internal server error" });
+  }
+};
+
+exports.remove = async (req, res) => {
+  try {
+    const db = req.app.get("db");
+    const id = req.params.id;
+
+    const bike = await bikeModel.getBikeByID(id, db);
+
+    const result = await bikeModel.removeBike(id, db);
+
+    try {
+      await unlinkFile(bike.image);
+    } catch (unlinkError) {
+      console.error("Error removing image file:", unlinkError);
+    }
+
+    res
+      .status(200)
+      .json({ message: "Bike removed successfully", bike: result });
+  } catch (error) {
+    console.error("Error removing bike:", error);
     res.status(500).json({ error: "Internal server error" });
   }
 };
