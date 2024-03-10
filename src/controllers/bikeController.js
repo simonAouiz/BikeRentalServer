@@ -47,13 +47,13 @@ exports.getBikesByUsername = async (req, res) => {
   }
 };
 
+// In bikeController.js
+
 exports.getBikesWithFilter = async (req, res) => {
   try {
     const db = req.app.get("db");
-    const { city, startDate, endDate } = req.query; // Extract parameters from req.query
-    console.log(city, startDate, endDate);
+    const { city, startDate, endDate } = req.query;
 
-    // Build filter object based on provided parameters
     const filter = {};
     if (city) filter.city = city;
     if (startDate && endDate) {
@@ -61,10 +61,21 @@ exports.getBikesWithFilter = async (req, res) => {
       filter.dateEnd = { $lte: endDate };
     }
 
-    // Get bikes from the database based on the filter
-    const result = await bikeModel.getBikesFilteredFromDB(filter, db);
+    const bikes = await bikeModel.getBikesFilteredFromDB(filter, db);
 
-    res.status(200).json({ message: "Got bikes successfully", bikes: result });
+    const bikesWithUsers = await Promise.all(
+      bikes.map(async (bike) => {
+        const user = await bikeModel.getUserByUsername(
+          { username: bike.uploader },
+          db
+        );
+        return { ...bike, user };
+      })
+    );
+
+    res
+      .status(200)
+      .json({ message: "Got bikes successfully", bikes: bikesWithUsers });
   } catch (error) {
     console.error("Error getting bikes with filter:", error);
     res.status(500).json({ error: "Internal server error" });
