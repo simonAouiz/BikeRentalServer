@@ -30,7 +30,7 @@ app.use("/users", upload.none(), userRoutes);
 app.use("/bikes", upload.single("image"), bikeRoutes);
 
 // Serve static files from the 'uploads' directory
-app.use("/uploads", express.static("uploads"));
+app.use("/uploads", express.static(path.join(__dirname, "uploads")));
 
 // Start the server
 const port = process.env.PORT || 5500;
