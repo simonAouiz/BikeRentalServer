@@ -69,9 +69,8 @@ exports.getUserByUsername = async ({ username }, db) => {
   });
 };
 
-exports.getBikesFilteredFromDB = async ({ city, startDate, endDate }, db) => {
+exports.getBikesFilteredFromDB = async ({ city, dateStart, dateEnd }, db) => {
   return new Promise((resolve, reject) => {
-    // Construct the SQL query based on the provided filter parameters
     let sql = "SELECT * FROM bikes WHERE 1=1";
     const params = [];
 
@@ -79,9 +78,13 @@ exports.getBikesFilteredFromDB = async ({ city, startDate, endDate }, db) => {
       sql += " AND city = ?";
       params.push(city);
     }
-    if (startDate && endDate) {
-      sql += " AND dateStart >= ? AND dateEnd <= ?";
-      params.push(startDate, endDate);
+    if (dateStart) {
+      sql += " AND dateStart >= ?";
+      params.push(dateStart);
+    }
+    if (dateEnd) {
+      sql += " AND dateEnd <= ?";
+      params.push(dateEnd);
     }
 
     db.all(sql, params, function (err, rows) {

@@ -56,9 +56,11 @@ exports.getBikesWithFilter = async (req, res) => {
 
     const filter = {};
     if (city) filter.city = city;
-    if (startDate && endDate) {
-      filter.dateStart = { $gte: startDate };
-      filter.dateEnd = { $lte: endDate };
+    if (startDate) {
+      filter.dateStart = startDate;
+    }
+    if (endDate) {
+      filter.dateEnd = endDate;
     }
 
     const bikes = await bikeModel.getBikesFilteredFromDB(filter, db);
