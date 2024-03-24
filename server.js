@@ -24,10 +24,12 @@ const upload = multer({ storage: storage });
 // Import user routes
 const userRoutes = require("./src/routes/userRoutes");
 const bikeRoutes = require("./src/routes/bikeRoutes");
+const requestRoutes = require("./src/routes/requestRoutes");
 
 // Use user routes
 app.use("/users", upload.none(), userRoutes);
 app.use("/bikes", upload.single("image"), bikeRoutes);
+app.use("/requests", upload.none(), requestRoutes);
 
 // Serve static files from the 'uploads' directory
 app.use("/uploads", express.static(path.join(__dirname, "uploads")));

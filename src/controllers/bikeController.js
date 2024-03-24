@@ -47,8 +47,6 @@ exports.getBikesByUsername = async (req, res) => {
   }
 };
 
-// In bikeController.js
-
 exports.getBikesWithFilter = async (req, res) => {
   try {
     const db = req.app.get("db");
@@ -65,19 +63,7 @@ exports.getBikesWithFilter = async (req, res) => {
 
     const bikes = await bikeModel.getBikesFilteredFromDB(filter, db);
 
-    const bikesWithUsers = await Promise.all(
-      bikes.map(async (bike) => {
-        const user = await bikeModel.getUserByUsername(
-          { username: bike.uploader },
-          db
-        );
-        return { ...bike, user };
-      })
-    );
-
-    res
-      .status(200)
-      .json({ message: "Got bikes successfully", bikes: bikesWithUsers });
+    res.status(200).json({ message: "Got bikes successfully", bikes });
   } catch (error) {
     console.error("Error getting bikes with filter:", error);
     res.status(500).json({ error: "Internal server error" });
@@ -147,6 +133,20 @@ exports.remove = async (req, res) => {
       .json({ message: "Bike removed successfully", bike: result });
   } catch (error) {
     console.error("Error removing bike:", error);
+    res.status(500).json({ error: "Internal server error" });
+  }
+};
+
+exports.getBikeByID = async (req, res) => {
+  try {
+    const db = req.app.get("db");
+    const id = req.params.id;
+
+    const bike = await bikeModel.getBikeByID(id, db);
+
+    res.status(200).json({ message: "Bike fetched successfully", bike: bike });
+  } catch (error) {
+    console.error("Error fetching bike:", error);
     res.status(500).json({ error: "Internal server error" });
   }
 };

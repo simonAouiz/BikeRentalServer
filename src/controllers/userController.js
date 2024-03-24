@@ -67,3 +67,21 @@ exports.changePassword = async (req, res) => {
     res.status(500).json({ error: "Internal server error" });
   }
 };
+
+exports.getUserByUsername = async (req, res) => {
+  try {
+    const db = req.app.get("db");
+    const username = req.params.username;
+
+    const user = await userModel.getUserByUsername(username, db);
+
+    if (user) {
+      res.status(200).json(user);
+    } else {
+      res.status(404).json({ error: "User not found" });
+    }
+  } catch (error) {
+    console.error("Error getting user:", error);
+    res.status(500).json({ error: "Internal server error" });
+  }
+};
